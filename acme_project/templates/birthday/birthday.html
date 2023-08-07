@@ -7,6 +7,8 @@
     {% if '/edit/' in request.path %}
       <!-- Вместо form.instance подставляем data. -->
       <h1>Редактировать запись {{ data.pk }}</h1>
+    {% elif "/delete/" in request.path %}
+      <h1>Удалить запись {{ data.pk }}</h1>
     {% else %}
       <h1>Создать запись</h1>
     {% endif %}
@@ -15,10 +17,16 @@
         Калькулятор ожидания дня рождения
       </div>
       <div class="card-body">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
           {% csrf_token %}
-          {% bootstrap_form form %}
-          {% bootstrap_button button_type="submit" content="Отправить" %}
+          {% if not "/delete" in request.path %}
+            {% bootstrap_form form %}
+            {% bootstrap_button button_type="submit" content="Отправить" %}
+          {% else %}
+            <p>{{ data.first_name }} {{ data.last_name }}</p>
+            <p>{{ data.birthday }}</p>
+            {% bootstrap_button button_type="submit" content="Удалить" %}
+          {% endif %}
         </form>
       </div>
     </div>
